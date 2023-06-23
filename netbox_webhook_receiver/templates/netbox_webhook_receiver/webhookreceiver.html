@@ -1,0 +1,51 @@
+{% extends 'generic/object.html' %}
+{% load render_table from django_tables2 %}
+
+{% block content %}
+  <div class="row mb-3">
+    <div class="col col-md-6">
+      <div class="card">
+        <h5 class="card-header">Webhook Receiver</h5>
+        <div class="card-body">
+          <table class="table table-hover attr-table">
+            <tr>
+              <th scope="row">Name</th>
+              <td>{{ object.name }}</td>
+            </tr>
+            <tr>
+              <th scope="row">Webhook origin</th>
+              <td>{{ object.originator_type }}</td>
+            </tr>
+            <tr>
+              <th scope="row">UUID</th>
+              <td>{{ object.uuid }}</td>
+            </tr>
+            <tr>
+              <th scope="row">Token name</th>
+              <td>{{ object.token_name }}</td>
+            </tr>
+            <tr>
+              <th scope="row">Token</th>
+              <td>{{ object.token }}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      {% include 'inc/panels/custom_fields.html' %}
+    </div>
+    <div class="col col-md-6">
+      {% include 'inc/panels/tags.html' %}
+      {% include 'inc/panels/comments.html' %}
+    </div>
+  </div>
+  <div class="row">
+    <div class="col col-md-12">
+      <div class="card">
+        <h5 class="card-header">Webhook Receiver Endpoint</h5>
+        <div class="card-body">
+          {{request.headers.referer | split:"/" | slice:"-2" | join:"/" }}/webhooks/{{ object.originator_type }}/{{ object.uuid}}/
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
