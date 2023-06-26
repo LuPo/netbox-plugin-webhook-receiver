@@ -5,7 +5,7 @@ from .models import WebhookReceiver, OriginatorChoices
 
 
 class WebhookReceiverForm(NetBoxModelForm):
-    # originator_type = DynamicModelChoiceField(
+    # webhook_origin = DynamicModelChoiceField(
     #     queryset=OriginatorChoices.objects.all()
     # )
     comments = CommentField()
@@ -15,7 +15,7 @@ class WebhookReceiverForm(NetBoxModelForm):
         fields = (
             "name",
             "description",
-            "originator_type",
+            "webhook_origin",
             "uuid",
             "token_name",
             "token",
@@ -30,7 +30,7 @@ class WebhookReceiverFilterForm(NetBoxModelFilterSetForm):
     #     required=False
     # )
 
-    originator_type = forms.MultipleChoiceField(
+    webhook_origin = forms.MultipleChoiceField(
         choices=OriginatorChoices, required=False
     )
     uuid = forms.CharField(required=False)

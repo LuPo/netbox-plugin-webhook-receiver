@@ -29,7 +29,7 @@ class WebhookReceiver(NetBoxModel):
     name = models.CharField(
         help_text="Webhook receiver name", max_length=50, null=False
     )
-    originator_type = models.CharField(
+    webhook_origin = models.CharField(
         max_length=30,
         choices=OriginatorChoices,
         null=False,
@@ -50,7 +50,7 @@ class WebhookReceiver(NetBoxModel):
     class Meta:
         ordering = (
             "name",
-            "originator_type",
+            "webhook_origin",
         )
 
     def __str__(self):

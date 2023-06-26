@@ -17,7 +17,7 @@ class WebhookReceiverSerializer(NetBoxModelSerializer):
             "url",
             "display",
             "name",
-            "originator_type",
+            "webhook_origin",
             "token_name",
             "uuid",
             "tags",

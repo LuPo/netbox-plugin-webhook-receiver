@@ -14,7 +14,7 @@
             </tr>
             <tr>
               <th scope="row">Webhook origin</th>
-              <td>{{ object.originator_type }}</td>
+              <td>{{ object.webhook_origin }}</td>
             </tr>
             <tr>
               <th scope="row">UUID</th>
@@ -43,7 +43,7 @@
       <div class="card">
         <h5 class="card-header">Webhook Receiver Endpoint</h5>
         <div class="card-body">
-          {{request.headers.referer | split:"/" | slice:"-2" | join:"/" }}/webhooks/{{ object.originator_type }}/{{ object.uuid}}/
+          {{request.headers.referer | split:"/" | slice:"-2" | join:"/" }}/webhooks/{{ object.webhook_origin }}/{{ object.uuid}}/
         </div>
       </div>
     </div>

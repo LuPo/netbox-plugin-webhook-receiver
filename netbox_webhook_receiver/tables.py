@@ -14,9 +14,9 @@ class WebhookReceiverTable(NetBoxTable):
             "comments",
             "name",
             "description",
-            "originator_type",
+            "webhook_origin",
             "uuid",
             "token_name",
             "token",
         )
-        default_columns = ("name", "originator_type", "uuid")
+        default_columns = ("name", "webhook_origin", "uuid")
