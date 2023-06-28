@@ -64,7 +64,7 @@ def incomming_webhook_request(request, **kwargs):
                 content_type="text/plain",
             )
 
-        result = process_webhook(receiver)
+        result = process_webhook_sync_datasource(receiver)
 
     logger.info(result)
     return HttpResponse(
@@ -74,7 +74,7 @@ def incomming_webhook_request(request, **kwargs):
 
 
 @atomic
-def process_webhook(receiver):
+def process_webhook_sync_datasource(receiver):
     dummy_request = UserRequest()
     receiver.datasource.enqueue_sync_job(request=dummy_request)
     # DataSource.objects.filter(pk=receiver.datasource.pk).update(status="failed")
