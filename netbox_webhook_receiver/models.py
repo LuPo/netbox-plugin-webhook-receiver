@@ -1,3 +1,4 @@
+from core.models import DataSource
 from django.db import models
 from django.urls import reverse
 from netbox.models import NetBoxModel
@@ -27,6 +28,9 @@ class WebhookMessage(models.Model):
 
 class WebhookReceiver(NetBoxModel):
     comments = models.TextField(blank=True)
+    datasource = models.ForeignKey(
+        to=DataSource, on_delete=models.CASCADE, blank=True, null=True
+    )
     description = models.CharField(max_length=500, blank=True)
     name = models.CharField(
         help_text="Webhook receiver name", max_length=50, null=False
@@ -40,17 +44,20 @@ class WebhookReceiver(NetBoxModel):
         null=False,
         default="X-Gitlab-Token",
     )
-    webhook_origin = models.CharField(
+    webhook_provider = models.CharField(
         max_length=30,
         choices=OriginatorChoices,
         null=False,
+    )
+    store_payload = models.BooleanField(
+        help_text="Store payload of incomming webhooks", default=True
     )
     uuid = models.UUIDField(default=uuid.uuid4)
 
     class Meta:
         ordering = (
             "name",
-            "webhook_origin",
+            "webhook_provider",
         )
 
     def __str__(self):

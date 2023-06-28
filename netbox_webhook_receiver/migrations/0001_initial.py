@@ -50,7 +50,7 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 ("name", models.CharField(max_length=50)),
-                ("webhook_origin", models.CharField(max_length=30)),
+                ("webhook_provider", models.CharField(max_length=30)),
                 ("uuid", models.UUIDField(default=uuid.uuid4)),
                 ("token", models.CharField(max_length=50)),
                 (
@@ -67,7 +67,7 @@ class Migration(migrations.Migration):
                 ),
             ],
             options={
-                "ordering": ("name", "webhook_origin"),
+                "ordering": ("name", "webhook_provider"),
             },
         ),
         migrations.AddIndex(

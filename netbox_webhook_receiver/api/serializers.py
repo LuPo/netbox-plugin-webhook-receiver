@@ -13,15 +13,17 @@ class WebhookReceiverSerializer(NetBoxModelSerializer):
     class Meta:
         model = WebhookReceiver
         fields = (
-            "id",
-            "url",
-            "display",
-            "name",
-            "webhook_origin",
-            "token_name",
-            "uuid",
-            "tags",
             "custom_fields",
             "created",
+            "datasource",
             "last_updated",
+            "id",
+            "display",
+            "name",
+            "store_payload",
+            "tags",
+            "token_name",
+            "url",
+            "uuid",
+            "webhook_provider",
         )

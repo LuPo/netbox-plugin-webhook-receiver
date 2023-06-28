@@ -13,10 +13,12 @@ class WebhookReceiverTable(NetBoxTable):
             "pk",
             "comments",
             "name",
+            "datasource",
             "description",
-            "webhook_origin",
-            "uuid",
+            "store_payload",
             "token_name",
             "token",
+            "uuid",
+            "webhook_provider",
         )
-        default_columns = ("name", "webhook_origin", "uuid")
+        default_columns = ("name", "webhook_provider", "uuid")

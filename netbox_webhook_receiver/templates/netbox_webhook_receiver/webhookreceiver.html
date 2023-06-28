@@ -14,7 +14,7 @@
             </tr>
             <tr>
               <th scope="row">Webhook origin</th>
-              <td>{{ object.webhook_origin }}</td>
+              <td>{{ object.webhook_provider }}</td>
             </tr>
             <tr>
               <th scope="row">UUID</th>
@@ -28,12 +28,33 @@
               <th scope="row">Token</th>
               <td>{{ object.token }}</td>
             </tr>
+            <tr>
+              <th scope="row">Store payload</th>
+              <td>{{ object.store_payload }}</td>
+            </tr>
           </table>
         </div>
       </div>
       {% include 'inc/panels/custom_fields.html' %}
     </div>
     <div class="col col-md-6">
+      <div class="card">
+        <h5 class="card-header">Webhook actions</h5>
+        <div class="card-body">
+          <table class="table table-hover attr-table">
+            <tr>
+              <th scope="row">Update datasource</th>
+              <td>{{ object.datasource }}</td>
+            </tr>
+            <tr>
+              <th scope="row">Run Custom Script</th>
+              <td>{{ object.customscript }}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    <!-- </div> -->
+    <!-- <div class="col col-md-6"> -->
       {% include 'inc/panels/tags.html' %}
       {% include 'inc/panels/comments.html' %}
     </div>
@@ -41,9 +62,9 @@
   <div class="row">
     <div class="col col-md-12">
       <div class="card">
-        <h5 class="card-header">Webhook Receiver Endpoint</h5>
+        <h5 class="card-header">Webhook Receiver URL</h5>
         <div class="card-body">
-          {{request.headers.referer | split:"/" | slice:"-2" | join:"/" }}/webhooks/{{ object.webhook_origin }}/{{ object.uuid}}/
+          {{request.headers.referer | split:"/" | slice:"5" | join:"/" }}/webhooks/{{ object.uuid}}/
         </div>
       </div>
     </div>
