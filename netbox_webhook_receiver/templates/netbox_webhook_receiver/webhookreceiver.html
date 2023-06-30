@@ -13,8 +13,14 @@
               <td>{{ object.name }}</td>
             </tr>
             <tr>
-              <th scope="row">Webhook origin</th>
-              <td>{{ object.webhook_provider }}</td>
+              <th scope="row">Description</th>
+              <td>{{ object.description }}</td>
+            </tr>
+            <tr>
+              <th scope="row">Receiver group</th>
+              <td>
+                <a href="{{ object.receiver_group.get_absolute_url }}">{{ object.receiver_group }}</a>
+              </td>
             </tr>
             <tr>
               <th scope="row">UUID</th>

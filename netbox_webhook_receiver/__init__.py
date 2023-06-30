@@ -1,14 +1,14 @@
 from extras.plugins import PluginConfig
 
-__version__ = "0.0.4"
+__version__ = "0.1.1"
 
 
 class NetBoxWebhookReceiverConfig(PluginConfig):
     name = "netbox_webhook_receiver"
     verbose_name = "NetBox Webhook Receiver"
-    description = "Manage Webhook Receiver endpoint in NetBox"
+    description = "Manage webhook receivers and queues related actions in NetBox"
     version = __version__
-    author = "Lukasz Polanski"
+    author = "Łukasz Polański"
     author_email = "wookasz@gmail.com"
     required_settings = []
     default_settings = {}

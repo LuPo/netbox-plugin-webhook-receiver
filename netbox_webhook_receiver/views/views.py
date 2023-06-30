@@ -3,11 +3,12 @@ import json
 import logging
 
 from django.contrib.auth.models import User
-
-# from rq.timeouts import JobTimeoutException
-# from core.models import DataSource
 from django.db.transaction import atomic, non_atomic_requests
-from django.http import HttpResponse, HttpResponseForbidden
+from django.http import (
+    HttpResponse,
+    HttpResponseForbidden,
+    HttpResponseNotFound,
+)
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
@@ -17,24 +18,18 @@ from secrets import compare_digest
 logger = logging.getLogger(__name__)
 
 
-class UserRequest:
-    """
-    Netbox Job model requres valid user object when queueing datasource sync.
-    Hardcoding default user
-    """
-
-    def __init__(self, userid=1):
-        self.user = User.objects.get(id=userid)
-
-
 @csrf_exempt
 @require_POST
 @non_atomic_requests
 def incomming_webhook_request(request, **kwargs):
-    receiver = WebhookReceiver.objects.get(uuid=kwargs["random_path"])
-    result = "No action has been taken by webhook receiver"
-    if not receiver:
-        return HttpResponse(
+    """
+    Validates incomming webhook path and custom header authentication.
+    Calls the webhook processing function.
+    """
+    try:
+        receiver = WebhookReceiver.objects.get(uuid=kwargs["random_path"])
+    except WebhookReceiver.DoesNotExist:
+        return HttpResponseNotFound(
             f"Provided path selector ({kwargs['random_path']}) is not correct"
         )
 
@@ -46,6 +41,7 @@ def incomming_webhook_request(request, **kwargs):
             content_type="text/plain",
         )
 
+    # Decide to store webhook payload for any reason in the future.
     if receiver.store_payload:
         WebhookMessage.objects.filter(
             received_at__lte=timezone.now() - dt.timedelta(days=2)
@@ -56,13 +52,16 @@ def incomming_webhook_request(request, **kwargs):
             payload=payload,
         )
 
+    result = "No action has been taken by webhook receiver"
+    # So far datasource sync is the only action of the incomming webhook
     if receiver.datasource:
         # Prevent queuing multiple syncronizzation requestes
-        if receiver.datasource.jobs.first().status == "pending":
-            return HttpResponse(
-                "There are already pending jobs in the queue",
-                content_type="text/plain",
-            )
+        if job := receiver.datasource.jobs.first():
+            if job.status == "pending":
+                return HttpResponseForbidden(
+                    "There are already pending jobs in the queue",
+                    content_type="text/plain",
+                )
 
         result = process_webhook_sync_datasource(receiver)
 
@@ -75,8 +74,16 @@ def incomming_webhook_request(request, **kwargs):
 
 @atomic
 def process_webhook_sync_datasource(receiver):
-    dummy_request = UserRequest()
-    receiver.datasource.enqueue_sync_job(request=dummy_request)
-    # DataSource.objects.filter(pk=receiver.datasource.pk).update(status="failed")
+    receiver.datasource.enqueue_sync_job(request=DefaultUserRequest())
 
     return f"Synchronizing Data Source: {receiver.datasource.name}"
+
+
+class DefaultUserRequest:
+    """
+    Netbox Job model requres valid user object when queueing datasource sync.
+    Hardcoding default admin user
+    """
+
+    def __init__(self, userid=1):
+        self.user = User.objects.get(id=userid)

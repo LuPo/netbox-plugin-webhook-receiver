@@ -18,4 +18,14 @@ urlpatterns = (
         name="webhookreceiver_changelog",
         kwargs={"model": models.WebhookReceiver},
     ),
+    # Webhook Receiver Group
+    path("groups/", views.WebhookReceiverGroupListView.as_view(), name="webhookreceivergroup_list",),
+    path("groups/add/", views.WebhookReceiverGroupEditView.as_view(), name="webhookreceivergroup_add",),
+    path("groups/<int:pk>/", views.WebhookReceiverGroupView.as_view(), name="webhookreceivergroup",),
+    path("groups/<int:pk>/edit/", views.WebhookReceiverGroupEditView.as_view(), name="webhookreceivergroup_edit",),
+    path("groups/<int:pk>/delete/", views.WebhookReceiverGroupDeleteView.as_view(), name="webhookreceivergroup_delete",),
+    path("groups/<int:pk>/changelog/", ObjectChangeLogView.as_view(),
+        name="webhookreceivergroup_changelog",
+        kwargs={"model": models.WebhookReceiverGroup},
+    ),
 )

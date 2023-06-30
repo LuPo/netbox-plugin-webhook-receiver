@@ -2,14 +2,7 @@ from core.models import DataSource
 from django.db import models
 from django.urls import reverse
 from netbox.models import NetBoxModel
-from utilities.choices import ChoiceSet
 import uuid
-
-
-class OriginatorChoices(ChoiceSet):
-    CHOICES = [
-        ("gitlab", "Gitlab", "green"),
-    ]
 
 
 class WebhookMessage(models.Model):
@@ -26,6 +19,25 @@ class WebhookMessage(models.Model):
         return self.received_at
 
 
+class WebhookReceiverGroup(NetBoxModel):
+    comments = models.TextField(blank=True)
+    description = models.CharField(max_length=500, blank=True)
+    name = models.CharField(
+        help_text="Webhook receiver group", max_length=50, null=False
+    )
+
+    class Meta:
+        ordering = ("name",)
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse(
+            "plugins:netbox_webhook_receiver:webhookreceivergroup", args=[self.pk]
+        )
+
+
 class WebhookReceiver(NetBoxModel):
     comments = models.TextField(blank=True)
     datasource = models.ForeignKey(
@@ -34,6 +46,13 @@ class WebhookReceiver(NetBoxModel):
     description = models.CharField(max_length=500, blank=True)
     name = models.CharField(
         help_text="Webhook receiver name", max_length=50, null=False
+    )
+    receiver_group = models.ForeignKey(
+        to=WebhookReceiverGroup,
+        on_delete=models.PROTECT,
+        related_name="receivers",
+        blank=True,
+        null=True,
     )
     token = models.CharField(
         help_text="Token to authorize the processing", max_length=50, null=False
@@ -44,11 +63,6 @@ class WebhookReceiver(NetBoxModel):
         null=False,
         default="X-Gitlab-Token",
     )
-    webhook_provider = models.CharField(
-        max_length=30,
-        choices=OriginatorChoices,
-        null=False,
-    )
     store_payload = models.BooleanField(
         help_text="Store payload of incomming webhooks", default=True
     )
@@ -57,7 +71,7 @@ class WebhookReceiver(NetBoxModel):
     class Meta:
         ordering = (
             "name",
-            "webhook_provider",
+            "receiver_group",
         )
 
     def __str__(self):
