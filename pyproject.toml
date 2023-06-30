@@ -1,8 +1,8 @@
 [tool.poetry]
 name = "netbox-plugin-webhook-receiver"
-version = "0.0.4"
-description = "NetBox Webhook is a plugin for managing webhook receiver in NetBox."
-authors = ["Lukasz Polanski <wookasz@gmail.com>"]
+version = "0.1.1"
+description = "NetBox Webhook is a plugin for managing webhook receivers in NetBox."
+authors = ["Łukasz Polański <wookasz@gmail.com>"]
 homepage = "https://github.com/LuPo/netbox-plugin-webhook-receiver"
 repository = "https://github.com/LuPo/netbox-plugin-webhook-receiver"
 license = "MIT"
@@ -12,7 +12,7 @@ exclude = ["netbox_webhook_receiver/tests/*"]
 keywords = ["netbox", "netbox-plugin", "webhook"]
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.10"
 
 [tool.poetry.group.dev.dependencies]
 pytest = ">7.2.0"

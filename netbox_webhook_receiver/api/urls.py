@@ -4,6 +4,7 @@ from . import views
 app_name = "netbox_webhook_receiver"
 
 router = NetBoxRouter()
-router.register("receiver", views.WebhookReceiverViewSet)
+router.register("receivers", views.WebhookReceiverViewSet)
+router.register("groups", views.WebhookReceiverGroupViewSet)
 
 urlpatterns = router.urls

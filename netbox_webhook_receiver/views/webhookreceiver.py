@@ -4,14 +4,7 @@ from .. import filtersets, forms, models, tables
 
 class WebhookReceiverView(generic.ObjectView):
     queryset = models.WebhookReceiver.objects.all()
-    template_name = "netbox_webhook_receiver/webhookreceiver.html"
-    # def get_extra_context(self, request, instance):
-    #     table = tables.AccessListRuleTable(instance.rules.all())
-    #     table.configure(request)
-
-    #     return {
-    #         'rules_table': table,
-    #     }
+    # template_name = "netbox_webhook_receiver/webhookreceiver.html"
 
 
 class WebhookReceiverListView(generic.ObjectListView):
@@ -28,17 +21,3 @@ class WebhookReceiverEditView(generic.ObjectEditView):
 
 class WebhookReceiverDeleteView(generic.ObjectDeleteView):
     queryset = models.WebhookReceiver.objects.all()
-
-
-# class AccessListRuleListView(generic.ObjectListView):
-#     queryset = models.AccessListRule.objects.all()
-#     table = tables.AccessListRuleTable
-#     filterset = filtersets.AccessListRuleFilterSet
-#     filterset_form = forms.AccessListRuleFilterForm
-
-# class AccessListRuleEditView(generic.ObjectEditView):
-#     queryset = models.AccessListRule.objects.all()
-#     form = forms.AccessListRuleForm
-
-# class AccessListRuleDeleteView(generic.ObjectDeleteView):
-#     queryset = models.AccessListRule.objects.all()
