@@ -1,3 +1,4 @@
+from .choices import WebhookAuthMethodChoices
 from core.models import DataSource
 from django.db import models
 from django.urls import reverse
@@ -57,11 +58,25 @@ class WebhookReceiver(NetBoxModel):
     token = models.CharField(
         help_text="Token to authorize the processing", max_length=50, null=False
     )
-    token_name = models.CharField(
-        help_text="Header option token name",
+    # Look at https://github.com/netbox-community/netbox/issues/11891
+    # and https://github.com/netbox-community/netbox/pull/12675/files
+    auth_header = models.CharField(  # instead of token_name
+        help_text="Custom Header option token name",
         max_length=50,
         null=False,
         default="X-Gitlab-Token",
+    )
+    auth_method = models.CharField(  # instead of token_name
+        help_text="Custom Header option token name",
+        max_length=50,
+        choices=WebhookAuthMethodChoices,
+        default=WebhookAuthMethodChoices.SIGNATURE_VERIFICATION,
+        null=False,
+    )
+    secret_key = models.CharField(  # instead of token_name
+        help_text="Secret key for HMAC hex digest of the payload body",
+        max_length=50,
+        null=True,
     )
     store_payload = models.BooleanField(
         help_text="Store payload of incomming webhooks", default=True

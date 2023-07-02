@@ -34,11 +34,11 @@ def incomming_webhook_request(request, **kwargs):
         )
 
     # Auth token name is defined on individual webhook receiver. "X-Gitlab-Token"
-    request_token = ascii(request.headers.get(receiver.token_name, ""))
+    request_token = ascii(request.headers.get(receiver.auth_header, ""))
     configured_token = ascii(receiver.token)
     if not compare_digest(request_token, configured_token):
         return HttpResponseForbidden(
-            f"Incorrect token in {receiver.token_name} header.",
+            f"Incorrect token in {receiver.auth_header} header.",
             content_type="text/plain",
         )
 

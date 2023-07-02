@@ -17,7 +17,9 @@ class WebhookReceiverTable(NetBoxTable):
             "datasource",
             "description",
             "receiver_group" "store_payload",
-            "token_name",
+            "auth_header",
+            "auth_method",
+            "secret_key",
             "token",
             "uuid",
         )
