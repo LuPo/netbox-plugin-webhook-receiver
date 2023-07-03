@@ -17,12 +17,12 @@ class WebhookReceiverForm(NetBoxModelForm):
                 "name",
                 "receiver_group",
                 "description",
-                "store_payload",
-                "datasource",
                 "uuid",
+                "store_payload",
             ),
         ),
         ("Authentication", ("auth_method", "auth_header", "secret_key", "token")),
+        ("Trigger action", ("datasource",)),
         ("Extra", ("tags")),
     )
 

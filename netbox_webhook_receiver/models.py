@@ -42,12 +42,14 @@ class WebhookReceiverGroup(NetBoxModel):
 class WebhookReceiver(NetBoxModel):
     comments = models.TextField(blank=True)
     datasource = models.ForeignKey(
-        to=DataSource, on_delete=models.CASCADE, blank=True, null=True
+        help_text="Incomming webhook triggers update of selected datasource",
+        to=DataSource,
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
     )
     description = models.CharField(max_length=500, blank=True)
-    name = models.CharField(
-        help_text="Webhook receiver name", max_length=50, null=False
-    )
+    name = models.CharField(max_length=50, null=False)
     receiver_group = models.ForeignKey(
         to=WebhookReceiverGroup,
         on_delete=models.PROTECT,
@@ -60,7 +62,8 @@ class WebhookReceiver(NetBoxModel):
     )
 
     auth_header = models.CharField(
-        help_text="Custom Header option bearing authentication token",
+        help_text="Custom Header option name for authentication data: \
+          token or payload HMAC hex digest",
         max_length=50,
         null=False,
         default="X-Gitlab-Token",
