@@ -56,27 +56,27 @@ class WebhookReceiver(NetBoxModel):
         null=True,
     )
     token = models.CharField(
-        help_text="Token to authorize the processing", max_length=50, null=False
+        help_text="Custom field Token", max_length=50, null=True, blank=True
     )
-    # Look at https://github.com/netbox-community/netbox/issues/11891
-    # and https://github.com/netbox-community/netbox/pull/12675/files
-    auth_header = models.CharField(  # instead of token_name
-        help_text="Custom Header option token name",
+
+    auth_header = models.CharField(
+        help_text="Custom Header option bearing authentication token",
         max_length=50,
         null=False,
         default="X-Gitlab-Token",
     )
-    auth_method = models.CharField(  # instead of token_name
-        help_text="Custom Header option token name",
+    auth_method = models.CharField(
+        help_text="Webhook authentication method",
         max_length=50,
         choices=WebhookAuthMethodChoices,
-        default=WebhookAuthMethodChoices.SIGNATURE_VERIFICATION,
+        default=WebhookAuthMethodChoices.TOKEN,
         null=False,
     )
-    secret_key = models.CharField(  # instead of token_name
+    secret_key = models.CharField(
         help_text="Secret key for HMAC hex digest of the payload body",
         max_length=50,
         null=True,
+        blank=True,
     )
     store_payload = models.BooleanField(
         help_text="Store payload of incomming webhooks", default=True

@@ -2,7 +2,7 @@ from utilities.choices import ChoiceSet
 
 
 class WebhookAuthMethodChoices(ChoiceSet):
-    TOKEN = "site"
+    TOKEN = "token"
     SIGNATURE_VERIFICATION = "signature_verification"
 
     CHOICES = [

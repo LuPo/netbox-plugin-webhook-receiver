@@ -11,10 +11,22 @@ class WebhookReceiverForm(NetBoxModelForm):
     comments = CommentField()
 
     fieldsets = (
-        ("VLAN", ("vid", "name", "status", "role", "description", "tags")),
+        (
+            "Webhook definition",
+            (
+                "name",
+                "receiver_group",
+                "description",
+                "store_payload",
+                "datasource",
+                "uuid",
+            ),
+        ),
         ("Authentication", ("auth_method", "auth_header", "secret_key", "token")),
+        ("Extra", ("tags")),
     )
 
+    # Thanks to Dillon Henschen for his netbox pull #12675
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -44,6 +56,17 @@ class WebhookReceiverForm(NetBoxModelForm):
         widgets = {
             "auth_method": HTMXSelect(),
         }
+
+    def clean(self):
+        super().clean()
+
+        auth_method = self.cleaned_data.get("auth_method")
+
+        if auth_method != WebhookAuthMethodChoices.TOKEN:
+            self.cleaned_data["token"] = None
+
+        if auth_method != WebhookAuthMethodChoices.SIGNATURE_VERIFICATION:
+            self.cleaned_data["secret_key"] = None
 
 
 class WebhookReceiverFilterForm(NetBoxModelFilterSetForm):

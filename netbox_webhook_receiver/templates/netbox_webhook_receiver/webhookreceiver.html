@@ -27,16 +27,20 @@
               <td>{{ object.uuid }}</td>
             </tr>
             <tr>
-              <th scope="row">Token name</th>
+              <th scope="row">Auth method</th>
+              <td>{{ object.auth_method }}</td>
+            </tr>
+            <tr>
+              <th scope="row">Auth header</th>
               <td>{{ object.auth_header }}</td>
             </tr>
             <tr>
               <th scope="row">Token</th>
-              <td>{{ object.token }}</td>
+              <td>{{ object.token|placeholder }}</td>
             </tr>
             <tr>
-              <th scope="row">Store payload</th>
-              <td>{{ object.store_payload }}</td>
+              <th scope="row">Secret Key</th>
+              <td>{{ object.secret_key|placeholder }}</td>
             </tr>
           </table>
         </div>
@@ -49,12 +53,16 @@
         <div class="card-body">
           <table class="table table-hover attr-table">
             <tr>
+              <th scope="row">Store payload</th>
+              <td>{{ object.store_payload|placeholder }}</td>
+            </tr>
+            <tr>
               <th scope="row">Update datasource</th>
-              <td>{{ object.datasource }}</td>
+              <td>{{ object.datasource|placeholder }}</td>
             </tr>
             <tr>
               <th scope="row">Run Custom Script</th>
-              <td>{{ object.customscript }}</td>
+              <td>{{ object.customscript|placeholder }}</td>
             </tr>
           </table>
         </div>
