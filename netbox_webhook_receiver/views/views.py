@@ -33,16 +33,16 @@ def incomming_webhook_request(request, **kwargs):
             f"Provided path selector ({kwargs['random_path']}) is not correct"
         )
 
-    # Auth token name is defined on individual webhook receiver. "X-Gitlab-Token"
-    request_token = ascii(request.headers.get(receiver.auth_header, ""))
-    configured_token = ascii(receiver.token)
-    if not compare_digest(request_token, configured_token):
+    # Webhook authentication
+    verified = authenticate_request(request, receiver)
+    if not verified:
         return HttpResponseForbidden(
-            f"Incorrect token in {receiver.auth_header} header.",
+            f"Incorrect {'token' if receiver.token else 'signature'} \
+in {receiver.auth_header} header.",
             content_type="text/plain",
         )
 
-    # Decide to store webhook payload for any reason in the future.
+    # Retain webhook payload for any future use case.
     if receiver.store_payload:
         WebhookMessage.objects.filter(
             received_at__lte=timezone.now() - dt.timedelta(days=2)
@@ -78,6 +78,38 @@ def process_webhook_sync_datasource(receiver):
     receiver.datasource.enqueue_sync_job(request=DefaultUserRequest())
 
     return f"Synchronizing Data Source: {receiver.datasource.name}"
+
+
+def authenticate_request(request, receiver) -> bool:
+    """
+    Auth token/signature header name is defined on individual webhook receiver.
+    """
+    # Custom header auth method
+    if receiver.token:
+        request_token = ascii(request.headers.get(receiver.auth_header, ""))
+        configured_token = ascii(receiver.token)
+        return compare_digest(request_token, configured_token)
+
+    # Signature verification auth method
+    elif receiver.secret_key:
+        import hashlib
+        import hmac
+
+        hmac_header = request.headers.get(receiver.auth_header, "")
+
+        # Calculate hexadecimal HMAC digest
+        hmac_digest = hmac.new(
+            key=receiver.secret_key.encode("utf-8"),
+            msg=request.body,
+            digestmod=hashlib.sha512,
+        ).hexdigest()
+
+        return hmac.compare_digest(
+            hmac_digest.encode("utf-8"), hmac_header.encode("utf-8")
+        )
+
+    else:
+        return False
 
 
 class DefaultUserRequest:
