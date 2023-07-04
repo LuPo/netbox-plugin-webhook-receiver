@@ -101,7 +101,7 @@ def authenticate_request(request, receiver) -> bool:
         hmac_digest = hmac.new(
             key=receiver.secret_key.encode("utf-8"),
             msg=request.body,
-            digestmod=hashlib.sha512,
+            digestmod=getattr(hashlib, receiver.hash_algorithm),
         ).hexdigest()
 
         return hmac.compare_digest(

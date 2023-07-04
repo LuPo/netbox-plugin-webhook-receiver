@@ -20,6 +20,7 @@ class WebhookReceiverTable(NetBoxTable):
             "store_payload",
             "auth_header",
             "auth_method",
+            "hash_algorithm",
             "secret_key",
             "token",
             "uuid",

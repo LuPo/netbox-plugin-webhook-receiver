@@ -21,7 +21,10 @@ class WebhookReceiverForm(NetBoxModelForm):
                 "store_payload",
             ),
         ),
-        ("Authentication", ("auth_method", "auth_header", "secret_key", "token")),
+        (
+            "Authentication",
+            ("auth_method", "auth_header", "secret_key", "token", "hash_algorithm"),
+        ),
         ("Trigger action", ("datasource",)),
         ("Extra", ("tags")),
     )
@@ -35,6 +38,7 @@ class WebhookReceiverForm(NetBoxModelForm):
         if auth_method != WebhookAuthMethodChoices.TOKEN:
             del self.fields["token"]
         if auth_method != WebhookAuthMethodChoices.SIGNATURE_VERIFICATION:
+            del self.fields["hash_algorithm"]
             del self.fields["secret_key"]
 
     class Meta:
@@ -46,6 +50,7 @@ class WebhookReceiverForm(NetBoxModelForm):
             "store_payload",
             "auth_method",
             "auth_header",
+            "hash_algorithm",
             "secret_key",
             "token",
             "uuid",

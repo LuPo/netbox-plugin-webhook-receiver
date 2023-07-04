@@ -1,4 +1,4 @@
-from .choices import WebhookAuthMethodChoices
+from .choices import WebhookAuthMethodChoices, HashingAlgorithmChoices
 from core.models import DataSource
 from django.db import models
 from django.urls import reverse
@@ -78,6 +78,13 @@ class WebhookReceiver(NetBoxModel):
     secret_key = models.CharField(
         help_text="Secret key for HMAC hex digest of the payload body",
         max_length=50,
+        null=True,
+        blank=True,
+    )
+    hash_algorithm = models.CharField(
+        help_text="Hashing algorithm for message authentication signature",
+        max_length=50,
+        choices=HashingAlgorithmChoices,
         null=True,
         blank=True,
     )
