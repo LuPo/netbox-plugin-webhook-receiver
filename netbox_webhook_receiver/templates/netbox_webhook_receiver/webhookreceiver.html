@@ -62,7 +62,9 @@
             </tr>
             <tr>
               <th scope="row">Update datasource</th>
-              <td>{{ object.datasource|placeholder }}</td>
+              <td>
+                <a href="{{ object.datasource.get_absolute_url }}">{{ object.datasource|placeholder }}</a>
+              </td>
             </tr>
             <tr>
               <th scope="row">Run Custom Script</th>
