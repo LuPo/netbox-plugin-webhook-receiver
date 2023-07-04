@@ -58,7 +58,10 @@ class WebhookReceiver(NetBoxModel):
         null=True,
     )
     token = models.CharField(
-        help_text="Custom field Token", max_length=50, null=True, blank=True
+        help_text="Authentication is mandatory. Custom field Token",
+        max_length=50,
+        null=True,
+        blank=True,
     )
 
     auth_header = models.CharField(
@@ -76,13 +79,15 @@ class WebhookReceiver(NetBoxModel):
         null=False,
     )
     secret_key = models.CharField(
-        help_text="Secret key for HMAC hex digest of the payload body",
+        help_text="Authentication is mandatory. \
+            Secret key for HMAC hex digest of the payload body",
         max_length=50,
         null=True,
         blank=True,
     )
     hash_algorithm = models.CharField(
-        help_text="Hashing algorithm for message authentication signature",
+        help_text="Hashing algorithm for message authentication signature. \
+            If not provided sha512 will be used",
         max_length=50,
         choices=HashingAlgorithmChoices,
         null=True,

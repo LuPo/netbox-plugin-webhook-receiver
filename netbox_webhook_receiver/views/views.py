@@ -96,12 +96,13 @@ def authenticate_request(request, receiver) -> bool:
         import hmac
 
         hmac_header = request.headers.get(receiver.auth_header, "")
+        hash_algorithm = receiver.hash_algorithm or "sha512"
 
         # Calculate hexadecimal HMAC digest
         hmac_digest = hmac.new(
             key=receiver.secret_key.encode("utf-8"),
             msg=request.body,
-            digestmod=getattr(hashlib, receiver.hash_algorithm),
+            digestmod=getattr(hashlib, hash_algorithm),
         ).hexdigest()
 
         return hmac.compare_digest(
