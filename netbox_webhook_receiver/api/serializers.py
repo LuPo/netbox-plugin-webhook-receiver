@@ -23,7 +23,9 @@ class WebhookReceiverSerializer(NetBoxModelSerializer):
             "receiver_group",
             "store_payload",
             "tags",
-            "token_name",
+            "auth_header",
+            "auth_method",
+            "hash_algorithm",
             "url",
             "uuid",
         )

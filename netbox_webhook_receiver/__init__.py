@@ -1,6 +1,6 @@
 from extras.plugins import PluginConfig
 
-__version__ = "0.1.2"
+__version__ = "0.2.0"
 
 
 class NetBoxWebhookReceiverConfig(PluginConfig):

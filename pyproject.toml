@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "netbox-plugin-webhook-receiver"
-version = "0.1.2"
+version = "0.2.0"
 description = "NetBox Webhook is a plugin for managing webhook receivers in NetBox."
 authors = ["Łukasz Polański <wookasz@gmail.com>"]
 homepage = "https://github.com/LuPo/netbox-plugin-webhook-receiver"

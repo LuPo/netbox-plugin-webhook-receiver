@@ -1,3 +1,4 @@
+from .choices import WebhookAuthMethodChoices, HashingAlgorithmChoices
 from core.models import DataSource
 from django.db import models
 from django.urls import reverse
@@ -41,12 +42,14 @@ class WebhookReceiverGroup(NetBoxModel):
 class WebhookReceiver(NetBoxModel):
     comments = models.TextField(blank=True)
     datasource = models.ForeignKey(
-        to=DataSource, on_delete=models.CASCADE, blank=True, null=True
+        help_text="Incomming webhook triggers update of selected datasource",
+        to=DataSource,
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
     )
     description = models.CharField(max_length=500, blank=True)
-    name = models.CharField(
-        help_text="Webhook receiver name", max_length=50, null=False
-    )
+    name = models.CharField(max_length=50, null=False)
     receiver_group = models.ForeignKey(
         to=WebhookReceiverGroup,
         on_delete=models.PROTECT,
@@ -55,13 +58,35 @@ class WebhookReceiver(NetBoxModel):
         null=True,
     )
     token = models.CharField(
-        help_text="Token to authorize the processing", max_length=50, null=False
+        help_text="Custom field Token", max_length=50, null=True, blank=True
     )
-    token_name = models.CharField(
-        help_text="Header option token name",
+
+    auth_header = models.CharField(
+        help_text="Custom Header option name for authentication data: \
+          token or payload HMAC hex digest",
         max_length=50,
         null=False,
         default="X-Gitlab-Token",
+    )
+    auth_method = models.CharField(
+        help_text="Webhook authentication method",
+        max_length=50,
+        choices=WebhookAuthMethodChoices,
+        default=WebhookAuthMethodChoices.TOKEN,
+        null=False,
+    )
+    secret_key = models.CharField(
+        help_text="Secret key for HMAC hex digest of the payload body",
+        max_length=50,
+        null=True,
+        blank=True,
+    )
+    hash_algorithm = models.CharField(
+        help_text="Hashing algorithm for message authentication signature",
+        max_length=50,
+        choices=HashingAlgorithmChoices,
+        null=True,
+        blank=True,
     )
     store_payload = models.BooleanField(
         help_text="Store payload of incomming webhooks", default=True
