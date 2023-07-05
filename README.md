@@ -22,10 +22,24 @@ This plugin aims mainly to streamline the deployment process of scripts and expo
 
 ## Installation & Configuration
 
-For all netbox plugin installations please refer to the oficial guide: [Using Plugins - NetBox Documentation](https://netbox.readthedocs.io/en/stable/plugins/)
+For general knowledge about netbox plugin installation please refer to the oficial guide: [Using Plugins - NetBox Documentation](https://netbox.readthedocs.io/en/stable/plugins/)
+
+You can find Netbox Webhook Receiver published to PyPI
+```bash
+$ source /opt/netbox/venv/bin/activate
+(venv) $ pip install netbox-plugin-webhook-receiver
+```
+
+To register this plugin in NetBox add _netbox_webhook_receiver_ to the config file. `~/netbox/configuration.py`
+
+```python
+PLUGINS = [
+    "netbox_webhook_receiver",
+]
+```
 
 Please remember that this plugin introduces new database models, therefore you must run the provided database schema migrations:
-```
+```bash
 $ source /opt/netbox/venv/bin/activate
 (venv) $ cd /opt/netbox/netbox/
 (venv) $ python3 manage.py migrate
