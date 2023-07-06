@@ -2,16 +2,16 @@
 
 <p align="center"><i>NetBox Webhook Receiver is a NetBox plugin for managing webhook receiver endpoints and executing assigned actions.</i></p>
 
-This plugin aims mainly to streamline the deployment process of scripts and export templates to Netbox by triggering the synchronisation of its Data Sources through incomming webhooks. Adding the receiver capability to Netbox opens other possible use cases, which might be worth exploring further. One exemple could be running Netbox Scripts triggered by remote events where it is not easy to execute a direct API call.
+This plugin aims mainly to streamline the deployment process of scripts and export templates to Netbox by triggering the synchronisation of its Data Sources through incoming webhooks. Adding the receiver capability to Netbox opens other possible use cases, which might be worth exploring further. One example could be running Netbox Scripts triggered by remote events where it is not easy to execute a direct API call.
 
 ## Features
 - [x] Per endpoint authentication (signature validation or custom header) on receiving webhooks
 - [x] Webhook url enriched with automaticaly generated uuid value for additional security
 - [x] Dedicated view to configure each webhook receiver url
 - [x] Logical grouping of the receivers
-- [x] Optionally store incomming webhook payload
+- [x] Optionally store incoming webhook payload
 - [x] Custom actions execution on successfully receving authenticated webhook message. Currently only one action available: Synchronize Netbox git 'Data Source'
-- [x] Use of standard Netbox jobs to enqueue webhook actions in the workers.
+- [x] Use of standard Netbox jobs to queue webhook actions in the workers.
 - [ ] Additional actions to be implemented
 - [ ] Plugin configuration parameters
 
@@ -22,15 +22,15 @@ This plugin aims mainly to streamline the deployment process of scripts and expo
 
 ## Installation & Configuration
 
-For general knowledge about netbox plugin installation please refer to the oficial guide: [Using Plugins - NetBox Documentation](https://netbox.readthedocs.io/en/stable/plugins/)
+For general knowledge about netbox plugin installation please refer to the official guide: [Using Plugins - NetBox Documentation](https://netbox.readthedocs.io/en/stable/plugins/)
 
-You can find Netbox Webhook Receiver published to PyPI
+Install NetBox Webhook Receiver:
 ```bash
 $ source /opt/netbox/venv/bin/activate
 (venv) $ pip install netbox-plugin-webhook-receiver
 ```
 
-To register this plugin in NetBox add _netbox_webhook_receiver_ to the config file. `~/netbox/configuration.py`
+To register this plugin in NetBox, add _netbox_webhook_receiver_ to the config file. `~/netbox/configuration.py`
 
 ```python
 PLUGINS = [
