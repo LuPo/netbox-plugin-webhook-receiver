@@ -17,7 +17,7 @@ This plugin aims mainly to streamline the deployment process of scripts and expo
 
 ## Requirements
 
-* NetBox 3.5 or higher
+* NetBox 4.0 or higher
 * Python 3.10 or higher
 
 ## Installation & Configuration

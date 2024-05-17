@@ -6,7 +6,6 @@
     <div class="col col-md-6">
       <div class="card">
         <h5 class="card-header">Webhook Receiver</h5>
-        <div class="card-body">
           <table class="table table-hover attr-table">
             <tr>
               <th scope="row">Name</th>
@@ -47,14 +46,12 @@
               <td>{{ object.secret_key|placeholder }}</td>
             </tr>
           </table>
-        </div>
       </div>
       {% include 'inc/panels/custom_fields.html' %}
     </div>
     <div class="col col-md-6">
       <div class="card">
         <h5 class="card-header">Webhook actions</h5>
-        <div class="card-body">
           <table class="table table-hover attr-table">
             <tr>
               <th scope="row">Store payload</th>
@@ -71,7 +68,6 @@
               <td>{{ object.customscript|placeholder }}</td>
             </tr>
           </table>
-        </div>
       </div>
     <!-- </div> -->
     <!-- <div class="col col-md-6"> -->
@@ -83,9 +79,11 @@
     <div class="col col-md-12">
       <div class="card">
         <h5 class="card-header">Webhook Receiver URL</h5>
-        <div class="card-body">
-          {{request.headers.referer | split:"/" | slice:"5" | join:"/" }}/webhooks/{{ object.uuid}}/
-        </div>
+        <table class="table">
+          <tr>
+            <td>{{request.headers.referer | split:"/" | slice:"5" | join:"/" }}/webhooks/{{ object.uuid}}/</td>
+          </tr>
+        </table>
       </div>
     </div>
   </div>

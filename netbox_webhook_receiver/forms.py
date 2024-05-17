@@ -1,6 +1,7 @@
 from django import forms
 from netbox.forms import NetBoxModelForm, NetBoxModelFilterSetForm
 from utilities.forms.fields import CommentField
+from utilities.forms.rendering import FieldSet
 from utilities.forms.utils import get_field_value
 from utilities.forms.widgets import HTMXSelect
 from .choices import WebhookAuthMethodChoices
@@ -11,22 +12,24 @@ class WebhookReceiverForm(NetBoxModelForm):
     comments = CommentField()
 
     fieldsets = (
-        (
-            "Webhook definition",
-            (
-                "name",
-                "receiver_group",
-                "description",
-                "uuid",
-                "store_payload",
-            ),
+        FieldSet(
+            "name",
+            "receiver_group",
+            "description",
+            "uuid",
+            "store_payload",
+            name="Webhook definition",
         ),
-        (
-            "Authentication",
-            ("auth_method", "auth_header", "secret_key", "token", "hash_algorithm"),
+        FieldSet(
+            "auth_method",
+            "auth_header",
+            "secret_key",
+            "token",
+            "hash_algorithm",
+            name="Authentication",
         ),
-        ("Trigger action", ("datasource",)),
-        ("Extra", ("tags")),
+        FieldSet("datasource", name="Trigger action"),
+        FieldSet("tags", name="Extra"),
     )
 
     # Thanks to Dillon Henschen for his netbox pull #12675
