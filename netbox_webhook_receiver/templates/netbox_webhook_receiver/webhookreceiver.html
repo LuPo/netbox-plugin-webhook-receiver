@@ -81,7 +81,12 @@
         <h5 class="card-header">Webhook Receiver URL</h5>
         <table class="table">
           <tr>
-            <td>{{request.headers.referer | split:"/" | slice:"5" | join:"/" }}/webhooks/{{ object.uuid}}/</td>
+            <td id="webhook_endpoint">{{request.headers.referer | split:"/" | slice:"5" | join:"/" }}/webhooks/{{ object.uuid}}/</td>
+            <td>
+              <div class="float-end">
+              {% copy_content "webhook_endpoint" %}
+              </div>
+            </td>
           </tr>
         </table>
       </div>
