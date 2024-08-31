@@ -95,7 +95,8 @@ def authenticate_request(request, receiver) -> bool:
         import hashlib
         import hmac
 
-        hmac_header = request.headers.get(receiver.auth_header, "")
+        hmac_header = request.headers.get(
+            receiver.auth_header, "").removeprefix("sha256=")
         hash_algorithm = receiver.hash_algorithm or "sha512"
 
         # Calculate hexadecimal HMAC digest
