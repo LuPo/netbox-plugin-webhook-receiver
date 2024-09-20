@@ -13,6 +13,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from netbox_webhook_receiver.models import WebhookMessage, WebhookReceiver
 from secrets import compare_digest
+from core.jobs import SyncDataSourceJob
 from users.models import User
 
 logger = logging.getLogger(__name__)
@@ -75,7 +76,8 @@ in {receiver.auth_header} header.",
 
 @atomic
 def process_webhook_sync_datasource(receiver):
-    receiver.datasource.enqueue_sync_job(request=DefaultUserRequest())
+    SyncDataSourceJob.enqueue(
+        instance=receiver.datasource, user=DefaultUserRequest().user)
 
     return f"Synchronizing Data Source: {receiver.datasource.name}"
 
