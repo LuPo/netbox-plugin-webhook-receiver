@@ -65,8 +65,7 @@ class WebhookReceiver(NetBoxModel):
     )
 
     auth_header = models.CharField(
-        help_text="Custom Header option name for authentication data: \
-          token or payload HMAC hex digest",
+        help_text="Custom Header option carying authentication token",
         max_length=50,
         null=False,
         default="X-Gitlab-Token",

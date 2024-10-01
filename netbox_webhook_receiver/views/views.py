@@ -34,6 +34,12 @@ def incomming_webhook_request(request, **kwargs):
             f"Provided path selector ({kwargs['random_path']}) is not correct"
         )
 
+    # Check if defined Authorisation header is present in the request
+    if receiver.auth_header not in request.headers:
+        return HttpResponseForbidden(
+            f"Did not get authentication header {receiver.auth_header} in the request"
+        )
+
     # Webhook authentication
     verified = authenticate_request(request, receiver)
     if not verified:
@@ -77,7 +83,8 @@ in {receiver.auth_header} header.",
 @atomic
 def process_webhook_sync_datasource(receiver):
     SyncDataSourceJob.enqueue(
-        instance=receiver.datasource, user=DefaultUserRequest().user)
+        instance=receiver.datasource, user=DefaultUserRequest().user
+    )
 
     return f"Synchronizing Data Source: {receiver.datasource.name}"
 
@@ -97,8 +104,9 @@ def authenticate_request(request, receiver) -> bool:
         import hashlib
         import hmac
 
-        hmac_header = request.headers.get(
-            receiver.auth_header, "").removeprefix("sha256=")
+        hmac_header = request.headers.get(receiver.auth_header, "").removeprefix(
+            "sha256="
+        )
         hash_algorithm = receiver.hash_algorithm or "sha512"
 
         # Calculate hexadecimal HMAC digest

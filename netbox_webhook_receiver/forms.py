@@ -40,6 +40,10 @@ class WebhookReceiverForm(NetBoxModelForm):
 
         if auth_method != WebhookAuthMethodChoices.TOKEN:
             del self.fields["token"]
+            self.fields[
+                "auth_header"
+            ].help_text = "Custom Header option carying \
+                payload signature (eg. 'X-Hub-Signature')."
         if auth_method != WebhookAuthMethodChoices.SIGNATURE_VERIFICATION:
             del self.fields["hash_algorithm"]
             del self.fields["secret_key"]
