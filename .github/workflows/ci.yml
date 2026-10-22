@@ -1,0 +1,92 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  # Lets the publish workflow run the tests before releasing
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Run pre-commit hooks
+        run: |
+          python -m pip install pre-commit
+          pre-commit run --all-files --show-diff-on-failure
+
+  test:
+    name: Tests (NetBox ${{ matrix.netbox-version }}, Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        netbox-version: ["v4.7.3"]
+        python-version: ["3.12", "3.14"]
+    services:
+      redis:
+        image: redis:8
+        ports:
+          - 6379:6379
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_USER: netbox
+          POSTGRES_PASSWORD: netbox
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+    steps:
+      - name: Check out plugin
+        uses: actions/checkout@v7
+        with:
+          path: plugin
+
+      - name: Check out NetBox
+        uses: actions/checkout@v7
+        with:
+          repository: netbox-community/netbox
+          ref: ${{ matrix.netbox-version }}
+          path: netbox
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: netbox/requirements.txt
+
+      # Editable install, the tests and query count baselines aren't in the wheel
+      - name: Install NetBox and the plugin
+        run: |
+          # Prebuilt psycopg wheels skip compiling against libpq
+          sed -i 's/^psycopg\[c,pool\]==/psycopg[binary,pool]==/' netbox/requirements.txt
+          python -m pip install --upgrade pip
+          pip install -r netbox/requirements.txt
+          pip install -e plugin
+
+      - name: Configure NetBox
+        run: cp plugin/testing/configuration.py netbox/netbox/netbox/configuration.py
+
+      - name: Check for missing migrations
+        working-directory: netbox/netbox
+        run: python manage.py makemigrations netbox_webhook_receiver --check --dry-run
+
+      - name: Run tests
+        working-directory: netbox/netbox
+        run: python manage.py test netbox_webhook_receiver

@@ -9,16 +9,23 @@ This plugin aims mainly to streamline the deployment process of scripts and expo
 - [x] Webhook url enriched with automaticaly generated uuid value for additional security
 - [x] Dedicated view to configure each webhook receiver url
 - [x] Logical grouping of the receivers
-- [x] Optionally store incoming webhook payload
+- [x] Optionally store incoming webhook payload, shown in the receiver's Payloads tab
 - [x] Custom actions execution on successfully receving authenticated webhook message. Currently only one action available: Synchronize Netbox git 'Data Source'
 - [x] Use of standard Netbox jobs to queue webhook actions in the workers.
+- [x] Plugin configuration parameters
 - [ ] Additional actions to be implemented
-- [ ] Plugin configuration parameters
 
 ## Requirements
 
-* NetBox 4.1 or higher
-* Python 3.10 or higher
+* NetBox 4.7 or higher
+* Python 3.12 or higher
+
+## Compatibility
+
+| NetBox version | Plugin version |
+|----------------|----------------|
+| 4.7 and later  | 0.6.x          |
+| 4.1 - 4.6      | 0.5.x          |
 
 ## Installation & Configuration
 
@@ -45,8 +52,53 @@ $ source /opt/netbox/venv/bin/activate
 (venv) $ python3 manage.py migrate
 ```
 
+Optional settings can be set in `PLUGINS_CONFIG`:
+
+```python
+PLUGINS_CONFIG = {
+    "netbox_webhook_receiver": {
+        # Username the queued jobs are attributed to (default: None, jobs have no user)
+        "job_user": "admin",
+        # Number of days to keep stored webhook payloads (default: 2)
+        "payload_retention_days": 2,
+    },
+}
+```
+
+## Usage
+
+Create a Webhook Receiver and copy the URL shown on its page into the webhook configuration of the sending service.
+
+* GitLab: use the Token method with the `X-Gitlab-Token` header and set the same value as the webhook secret token.
+* GitHub: use the Signature Verification method with the `X-Hub-Signature-256` header and the SHA-256 algorithm, set the webhook secret to the same secret key and the content type to `application/json`.
+
+When a Data Source is assigned, every authenticated webhook queues its synchronization. A webhook arriving while a synchronization is still waiting in the queue doesn't queue another one.
+
+With "Store payload" enabled, the received payloads are listed in the Payloads tab of the receiver, which helps to check what the sending service posts. Payloads are kept for `payload_retention_days`.
+
+Upgrading from 0.5.x: the receiver UUID becomes unique. The migration fails if two receivers share a UUID, so give them different UUIDs before running `migrate`. Stored payloads from 0.5.x aren't linked to any receiver and expire with the retention period.
+
+## NetBox Branching
+
+The plugin works with [NetBox Branching](https://github.com/netboxlabs/netbox-branching). Webhook receivers and groups are branched like other NetBox objects, so changes made in a branch apply to main when the branch is merged. Incoming webhooks are always handled in main: a receiver created in a branch returns 404, and changed credentials aren't used until the branch is merged. Stored payloads are always kept in main.
+
+To keep receivers out of branches, as NetBox does with its own webhooks, exempt them in the branching settings:
+
+```python
+PLUGINS_CONFIG = {
+    "netbox_branching": {
+        "exempt_models": ["netbox_webhook_receiver.*"],
+    },
+}
+```
+
+## Releasing
+
+Bump `version` in `pyproject.toml` and `__version__` in `netbox_webhook_receiver/__init__.py`, then push a matching tag (e.g. `v0.6.0`). The Publish to PyPI workflow checks that the tag matches both versions, builds the package and publishes it using PyPI trusted publishing.
+
 ## Screenshots
 
 ![Webhook Receivers](/docs/images/webhook_receivers.png)
 ![Webhook Receiver](/docs/images/webhook_receiver.png)
+![Webhook Receiver Payloads](/docs/images/webhook_receiver_payloads.png)
 ![Webhook Receiver Group](/docs/images/webhook_receiver_group.png)
