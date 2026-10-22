@@ -4,6 +4,7 @@ import json
 import uuid
 from unittest import mock
 
+from django.conf import settings
 from django.test import TestCase, override_settings
 from django.urls import reverse
 
@@ -181,19 +182,21 @@ class IncomingWebhookTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         enqueue.assert_not_called()
 
-    @override_settings(
-        PLUGINS_CONFIG={
-            "netbox_webhook_receiver": {
-                "job_user": "missing",
-                "payload_retention_days": 2,
-            }
-        }
-    )
     @mock.patch.object(SyncDataSourceJob, "enqueue")
     def test_sync_datasource_unknown_job_user(self, enqueue):
         WebhookReceiver.objects.filter(pk=self.token_receiver.pk).update(
             datasource=self.datasource
         )
         self.token_receiver.refresh_from_db()
-        self.post(self.token_receiver, headers={"X-Gitlab-Token": "gitlab-token"})
+
+        # Keep the config of other installed plugins (e.g. netbox_branching)
+        plugins_config = {
+            **settings.PLUGINS_CONFIG,
+            "netbox_webhook_receiver": {
+                **settings.PLUGINS_CONFIG["netbox_webhook_receiver"],
+                "job_user": "missing",
+            },
+        }
+        with override_settings(PLUGINS_CONFIG=plugins_config):
+            self.post(self.token_receiver, headers={"X-Gitlab-Token": "gitlab-token"})
         enqueue.assert_called_once_with(instance=self.datasource, user=None)

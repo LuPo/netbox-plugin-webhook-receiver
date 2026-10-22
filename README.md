@@ -78,6 +78,24 @@ With "Store payload" enabled, the received payloads are listed in the Payloads t
 
 Upgrading from 0.5.x: the receiver UUID becomes unique. The migration fails if two receivers share a UUID, so give them different UUIDs before running `migrate`. Stored payloads from 0.5.x aren't linked to any receiver and expire with the retention period.
 
+## NetBox Branching
+
+The plugin works with [NetBox Branching](https://github.com/netboxlabs/netbox-branching). Webhook receivers and groups are branched like other NetBox objects, so changes made in a branch apply to main when the branch is merged. Incoming webhooks are always handled in main: a receiver created in a branch returns 404, and changed credentials aren't used until the branch is merged. Stored payloads are always kept in main.
+
+To keep receivers out of branches, as NetBox does with its own webhooks, exempt them in the branching settings:
+
+```python
+PLUGINS_CONFIG = {
+    "netbox_branching": {
+        "exempt_models": ["netbox_webhook_receiver.*"],
+    },
+}
+```
+
+## Releasing
+
+Bump `version` in `pyproject.toml` and `__version__` in `netbox_webhook_receiver/__init__.py`, then push a matching tag (e.g. `v0.6.0`). The Publish to PyPI workflow checks that the tag matches both versions, builds the package and publishes it using PyPI trusted publishing.
+
 ## Screenshots
 
 ![Webhook Receivers](/docs/images/webhook_receivers.png)
