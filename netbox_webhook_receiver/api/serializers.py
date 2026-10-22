@@ -1,51 +1,63 @@
-from rest_framework import serializers
-
+from core.api.serializers import DataSourceSerializer
+from netbox.api.fields import RelatedObjectCountField
 from netbox.api.serializers import NetBoxModelSerializer
 from ..models import WebhookReceiver, WebhookReceiverGroup
 
 
-class WebhookReceiverSerializer(NetBoxModelSerializer):
-    url = serializers.HyperlinkedIdentityField(
-        view_name="plugins-api:netbox_webhook_receiver-api:webhookreceiver-detail"
-    )
-
-    class Meta:
-        model = WebhookReceiver
-        fields = (
-            "custom_fields",
-            "created",
-            "datasource",
-            "last_updated",
-            "id",
-            "display",
-            "name",
-            "receiver_group",
-            "store_payload",
-            "tags",
-            "auth_header",
-            "auth_method",
-            "hash_algorithm",
-            "url",
-            "uuid",
-        )
-
-
 class WebhookReceiverGroupSerializer(NetBoxModelSerializer):
-    url = serializers.HyperlinkedIdentityField(
-        view_name="plugins-api:netbox_webhook_receiver-api:webhookreceivergroup-detail"
-    )
-    receivers_count = serializers.IntegerField(read_only=True)
+    receivers_count = RelatedObjectCountField("receivers")
 
     class Meta:
         model = WebhookReceiverGroup
         fields = (
-            "created",
-            "last_updated",
             "id",
+            "url",
+            "display_url",
             "display",
             "name",
-            "tags",
             "description",
+            "comments",
+            "tags",
+            "custom_fields",
+            "created",
+            "last_updated",
             "receivers_count",
-            "url",
         )
+        brief_fields = ("id", "url", "display", "name", "description")
+
+
+class WebhookReceiverSerializer(NetBoxModelSerializer):
+    receiver_group = WebhookReceiverGroupSerializer(
+        nested=True, required=False, allow_null=True
+    )
+    datasource = DataSourceSerializer(nested=True, required=False, allow_null=True)
+
+    class Meta:
+        model = WebhookReceiver
+        fields = (
+            "id",
+            "url",
+            "display_url",
+            "display",
+            "name",
+            "description",
+            "receiver_group",
+            "uuid",
+            "store_payload",
+            "auth_method",
+            "auth_header",
+            "token",
+            "hash_algorithm",
+            "secret_key",
+            "datasource",
+            "comments",
+            "tags",
+            "custom_fields",
+            "created",
+            "last_updated",
+        )
+        brief_fields = ("id", "url", "display", "name", "description", "uuid")
+        extra_kwargs = {
+            "token": {"write_only": True},
+            "secret_key": {"write_only": True},
+        }

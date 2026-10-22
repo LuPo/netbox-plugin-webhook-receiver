@@ -1,0 +1,6 @@
+{
+  "webhookreceiver:api_list_objects": 13,
+  "webhookreceiver:list_objects_with_permission": 18,
+  "webhookreceivergroup:api_list_objects": 12,
+  "webhookreceivergroup:list_objects_with_permission": 17
+}

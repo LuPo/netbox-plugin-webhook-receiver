@@ -1,0 +1,21 @@
+{% extends "ui/panels/_base.html" %}
+
+{% block panel_content %}
+  {% if payloads %}
+    <div class="list-group list-group-flush">
+      {% for message in payloads %}
+        <details class="list-group-item"{% if forloop.first %} open{% endif %}>
+          <summary>{{ message.received_at|isodatetime }}</summary>
+          <pre class="mt-2 mb-0">{{ message.payload|json }}</pre>
+        </details>
+      {% endfor %}
+    </div>
+    {% if total > payloads|length %}
+      <div class="card-footer text-muted">
+        Showing the latest {{ payloads|length }} of {{ total }} payloads
+      </div>
+    {% endif %}
+  {% else %}
+    <div class="card-body text-muted">No payloads stored</div>
+  {% endif %}
+{% endblock panel_content %}
