@@ -98,7 +98,7 @@ Bump `version` in `pyproject.toml` and `__version__` in `netbox_webhook_receiver
 
 ## Screenshots
 
-![Webhook Receivers](/docs/images/webhook_receivers.png)
-![Webhook Receiver](/docs/images/webhook_receiver.png)
-![Webhook Receiver Payloads](/docs/images/webhook_receiver_payloads.png)
-![Webhook Receiver Group](/docs/images/webhook_receiver_group.png)
+![Webhook Receivers](https://raw.githubusercontent.com/LuPo/netbox-plugin-webhook-receiver/main/docs/images/webhook_receivers.png)
+![Webhook Receiver](https://raw.githubusercontent.com/LuPo/netbox-plugin-webhook-receiver/main/docs/images/webhook_receiver.png)
+![Webhook Receiver Payloads](https://raw.githubusercontent.com/LuPo/netbox-plugin-webhook-receiver/main/docs/images/webhook_receiver_payloads.png)
+![Webhook Receiver Group](https://raw.githubusercontent.com/LuPo/netbox-plugin-webhook-receiver/main/docs/images/webhook_receiver_group.png)
